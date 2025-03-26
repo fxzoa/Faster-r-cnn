@@ -1,9 +1,11 @@
-import torchvision
 import torch
-from PIL import ImageDraw
-from CustomDataset import Custom_Dataset
-from transforms import get_transform
+import torchvision
 from torchvision.models.detection import FasterRCNN
+
+from PIL import ImageDraw
+from lib.CustomDataset import Dataset
+from lib.CustomTransforms import get_transform
+
 
 # 許可リストにFasterRCNNを追加
 torch.serialization.add_safe_globals([FasterRCNN])
@@ -12,7 +14,7 @@ torch.serialization.add_safe_globals([FasterRCNN])
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 
 val_data_file = 'dataset/val/JPEGImages/'
-dataset = Custom_Dataset(val_data_file, get_transform())
+dataset = Dataset(val_data_file, get_transform())
 img, _ = dataset[0]
 
 #GPUで学習したモデルをCPUで読み込み場合は「map_loacation」をcpuに変更

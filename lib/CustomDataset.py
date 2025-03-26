@@ -12,7 +12,7 @@ def get_class_map(class_list=[]):
       class_map[class_name] = idx
     
 # データセットクラス
-class Custom_Dataset(torch.utils.data.Dataset):
+class Dataset(torch.utils.data.Dataset):
   def __init__(self, root, transforms, classs=["cat", "dog", "car"]):
     self.imgs = []
     self.targets = []
