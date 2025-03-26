@@ -15,9 +15,10 @@ def collate_fn(batch):
 if __name__ == '__main__':
   data_file = 'dataset/train/JPEGImages/'
   label_file = 'dataset/train/Annotations/'
+  classs=["cat", "dog", "car"]
   
   transform = get_transform(train=True, resize=1.0, hflip=0.5,vflip=0.5,brightness=0.5,noise=0.5)
-  dataset = Custom_Dataset(data_file, transforms=transform)
+  dataset = Custom_Dataset(data_file, transforms=transform, classs=classs)
   
   batch_size = 1
   data_loader = torch.utils.data.DataLoader(

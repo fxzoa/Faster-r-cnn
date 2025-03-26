@@ -6,12 +6,17 @@ import glob
 import io
 import copy
 
-
+class_map = {"background": 0}  # 背景を0として初期化
+def get_class_map(class_list=[]): 
+  for idx, class_name in enumerate(class_list, start=1):  # 1から始まるインデックスを使用
+      class_map[class_name] = idx
+    
 # データセットクラス
 class Custom_Dataset(torch.utils.data.Dataset):
-  def __init__(self, root, transforms):
+  def __init__(self, root, transforms, classs=["cat", "dog", "car"]):
     self.imgs = []
     self.targets = []
+    self.class_map=get_class_map(classs)
     self.transforms = transforms
     self.CreateDataset(root)
     
@@ -46,10 +51,13 @@ class Custom_Dataset(torch.utils.data.Dataset):
 
       num_objs = len(json_data['shapes'])        # 物体の個数
       boxes = []
+      labels = []
+      
       # バウンティングボックスから左上、左下、右上、右下の座標を取得し、
       # boxesリストへ追加
       for i in range(num_objs):
-        box = json_data['shapes'][i]['points']
+        shape = json_data['shapes'][i]
+        box =shape['points']
         x_list = []
         y_list = []
         for i in range(len(box)):
@@ -61,11 +69,16 @@ class Custom_Dataset(torch.utils.data.Dataset):
         ymin = min(y_list)
         ymax = max(y_list)
         boxes.append([xmin, ymin, xmax, ymax])
+        
+        # クラスラベルの設定
+        class_name = shape['label']                            # JSONからクラス名を取得
+        class_id = self.class_map.get(class_name, 0)  # マッピング辞書からIDを取得（不明な場合は0）
+        labels.append(class_id)
+        
       # boxesリストをtorch.Tensorに変換
       boxes = torch.as_tensor(boxes, dtype=torch.float32)
-      # torch.Tensorにラベルを設定
-      # 物体の個数(背景を0とする)
-      labels = torch.ones((num_objs,), dtype=torch.int64)
+      labels = torch.as_tensor(labels, dtype=torch.int64)
+      
       #targetsへboxesリストとlabelsリストを設定
       target = {}
       target["boxes"] = boxes
