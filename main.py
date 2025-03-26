@@ -1,7 +1,7 @@
 import torch
 import time
 import model
-from train2 import train
+from train import train
 from transforms import get_transform
 from CustomDataset import Custom_Dataset
 
