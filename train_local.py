@@ -1,5 +1,5 @@
 import torch
-import time
+import time, os, argparse
 from lib.CustomModel import get_instance_model
 from lib.CustomTrain import train
 from lib.CustomTransforms import get_transform
@@ -13,18 +13,16 @@ def collate_fn(batch):
 
 #メイン関数
 if __name__ == '__main__':
-  data_file = 'dataset/train/JPEGImages/'
-  label_file = 'dataset/train/Annotations/'
+  datasets = 'dataset/train/JPEGImages/'
   classs=["cat", "dog", "car"]
   
   transform = get_transform(train=True, resize=1.0, hflip=0.5,vflip=0.5,brightness=0.5,noise=0.5)
-  dataset = Dataset(data_file, transforms=transform, classs=classs)
+  dataset = Dataset(datasets, transforms=transform, classs=classs)
   
   batch_size = 1
-  data_loader = torch.utils.data.DataLoader(
-    dataset, batch_size=batch_size, shuffle=True, num_workers=0,
-    collate_fn=collate_fn,pin_memory=True)
-  num_classes = 2
+  data_loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=0, collate_fn=collate_fn,pin_memory=True)
+  
+  num_classes = len(classs)+1
   net = get_instance_model(num_classes)
 
   print(device)
