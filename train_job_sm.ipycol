@@ -1,0 +1,46 @@
+#!pip install sagemaker
+import sagemaker
+from sagemaker.pytorch import PyTorch
+import logging
+
+# 変数定義
+# SageMaker実行ロール
+role = "arn:aws:iam::479324185300:role/nan-test-ai-yolo11n-role"
+
+# S3 Bucket情報
+bucket = "nan-test-ai-yolo11n-backet"
+dataset_dir = "yolo0324"
+source_dir = "sources"
+
+
+# トレーニングジョブ設定
+estimator = PyTorch(
+  sagemaker_session=sagemaker.Session(),
+  role=role,
+  entry_point="train_sm.py",
+  source_dir=source_dir,
+  instance_count=1,
+  instance_type='ml.p3.2xlarge',
+  framework_version='2.0.0',                                                   # PyTorchバージョン
+  py_version='py310',
+  volume_size=5,                                                                       # 大規模データ用  
+  max_run=86400,                                                                     # 最大実行時間を24時間に設定  
+  base_job_name=f"{source}-train-job",
+  output_path=f's3://{bucket}/outputs',
+  hyperparameters={
+    'weights': f's3://{bucket}/models/base/yolo11s.pt'
+  },
+  environment={
+    # 'CUDA_LAUNCH_BLOCKING': '1'                                      # CUDAデバッグ用
+  },  
+  metric_definitions=[
+    {'Name': 'train:loss', 'Regex': 'Loss: (.*?) '},                            # メトリクス収集
+    {'Name': 'val:accuracy', 'Regex': 'Accuracy: (.*?) '}
+  ],
+  container_log_level=logging.DEBUG,
+  disable_profiler=True,                                                               # Debugger無効化
+  network_isolation=False                                                           # ネットワーク分離解除
+)
+
+# create traning job.
+estimator.fit(inputs=f's3://{bucket}/{dataset_dir}')

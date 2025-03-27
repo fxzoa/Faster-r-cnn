@@ -1,5 +1,5 @@
 import torch
-import time, os, argparse
+import time
 from lib.CustomModel import get_instance_model
 from lib.CustomTrain import train
 from lib.CustomTransforms import get_transform
@@ -50,11 +50,14 @@ if __name__ == '__main__':
       elif loss_min > loss:
         loss_min = loss
         epoch_min = epoch
-    # モデルデータ保存
-    torch.save(net, 'test.pth')
+
+    # 学習率の更新
     end_time = time.time()
     print("Epoch[{}] 平均Loss [{}], 最小Loss[{}], 最小Loss_epoch[{}], 学習率 [{}, Total_Time[{}]]".format(epoch, loss, loss_min, epoch_min, lr, end_time - start_time))
-    # 学習率の更新
-    lr_scheduler.step()
 
+    lr_scheduler.step()  
   print("処理時間:{0}".format(end_time - start_time))
+
+  # モデルデータ保存
+  torch.save(net, 'test.pth')
+  
