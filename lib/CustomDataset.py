@@ -41,6 +41,7 @@ class Dataset(torch.utils.data.Dataset):
   def CreateDataset(self, json_dir):
     json_paths = glob.glob(json_dir + '/*.json')
     for json_path in json_paths:
+      print('> json_path: ' + json_path)
       json_file = open(json_path)
       json_data = json.load(json_file)
 
