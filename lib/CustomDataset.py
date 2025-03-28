@@ -13,7 +13,7 @@ def get_class_map(class_list=[]):
     
 # データセットクラス
 class Dataset(torch.utils.data.Dataset):
-  def __init__(self, root, transforms, classs=["cat", "dog", "car"]):
+  def __init__(self, root, transforms, classs=[]):
     self.imgs = []
     self.targets = []
     self.class_map=get_class_map(classs)

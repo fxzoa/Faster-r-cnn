@@ -36,8 +36,8 @@ def parse_args():
 #メイン関数
 if __name__ == '__main__':
   args = parse_args()
-  classs=["cat", "dog", "car"]
-  
+  classs=["4936201107445","4909978132835","4901872471997","4901390181781","4901301348029","4580330031333","4580284235610","4580116462641","2400068190961"]
+    
   # データセットを取得
   transform = get_transform(train=True, resize=1.0, hflip=0.5,vflip=0.5,brightness=0.5,noise=0.5)
   dataset = Dataset(datasets, transforms=transform, classs=classs)
