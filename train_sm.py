@@ -16,7 +16,7 @@ print(f'sagemaker_dataset_base_dir: {datasets}')
 
 # トレーニング済みモデル保存先
 model_dir = os.path.join(os.environ.get('SM_MODEL_DIR', '/opt/ml/model'))
-model_file = os.path.join(model_dir, "faster_r_cnn_best.pt")
+model_file = os.path.join(model_dir, "best.pt")
 
 #バッチデータをまとめる関数
 def collate_fn(batch):
